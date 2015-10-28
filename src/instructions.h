@@ -68,7 +68,6 @@ typedef struct status_register_t {
 } status_register_t;
 
 typedef union instruction_t {
-
   uint32_t value;
 
   struct {
