@@ -7,13 +7,18 @@
 #include "errors.h"
 #include "instructions.h"
 
-#define MEMORY_SIZE 10
+#define MEMORY_SIZE 100
 
 uint32_t memory[MEMORY_SIZE];
 instruction_t program[] = {
   INSTRUCTION_L(LDC, 1, R0),
-  INSTRUCTION_LA(10),
+  INSTRUCTION_LA(0x10),
   INSTRUCTION_S(ADD, 1, R0, R0),
+
+  INSTRUCTION_L(LDC, 1, R1),
+  INSTRUCTION_LA(0x0c),
+  INSTRUCTION_S(SUB, 1, R1, R0),
+
   INSTRUCTION_S(EXIT, 1, R0, R0)
 };
 
@@ -26,7 +31,6 @@ void execute_instruction();
 int
 main(int argc, char * argv[])
 {
-
   // Set all the registers to a default value
   initialise_machine();
 
@@ -38,9 +42,11 @@ main(int argc, char * argv[])
       exit(2);
     }
 
-    printf("Instruction: %s. register_flag: %s\n",
+    printf("[%04d] Instruction: % 4s. register_flag: %s. Machine instruction: 0x%08x\n",
+      *pc,
       instruction_names[((instruction_t)memory[*pc]).long_instruction.opcode],
-      ((instruction_t)memory[*pc]).long_instruction.register_flag == 1 ? "true" : "false");
+      ((instruction_t)memory[*pc]).long_instruction.register_flag == 1 ? "true" : "false",
+      ((instruction_t)memory[*pc]).value);
 
     execute_instruction();
   }
@@ -57,7 +63,8 @@ initialise_machine()
 void
 execute_instruction()
 {
-  instruction_t * current_inst = (instruction_t*) &memory[register_file[*pc]];
+  instruction_t * current_inst = (instruction_t*) &memory[register_file[PC]];
+
   // At 1st we have to assume this is a long instruction
   switch(current_inst->long_instruction.opcode)
   {
@@ -69,8 +76,22 @@ execute_instruction()
         register_file[current_inst->two_op.upper_argument] += register_file[current_inst->two_op.lower_argument];
       }
       else
+      {
         ILLEGAL_INSTRUCTION_FORMAT();
+      }
+      break;
+    }
 
+    case SUB:
+    {
+      if(current_inst->two_op.register_flag == 1)
+      {
+        register_file[current_inst->two_op.upper_argument] -= register_file[current_inst->two_op.lower_argument];
+      }
+      else
+      {
+        ILLEGAL_INSTRUCTION_FORMAT();
+      }
       break;
     }
 
@@ -79,11 +100,13 @@ execute_instruction()
     {
       if(current_inst->long_instruction.register_flag == 1)
       {
-        register_file[current_inst->long_instruction.argument] = memory[*pc];
-        *pc = *pc + 1;
+        register_file[current_inst->long_instruction.argument] = memory[*pc + 1];
+        *pc +=1;
       }
       else
+      {
         ILLEGAL_INSTRUCTION_FORMAT();
+      }
 
       break;
     }
@@ -99,11 +122,13 @@ execute_instruction()
         exit(0);
       }
       else
+      {
         ILLEGAL_INSTRUCTION_FORMAT();
+      }
 
       break;
     }
   }
 
-  *pc = *pc + 1;
+  *pc += 1;
 }
