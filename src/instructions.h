@@ -11,10 +11,11 @@
     }                                           \
   }
 #define INSTRUCTION_L(op, reg_flag, arg) {.value = ((op << 27) + (reg_flag << 26) + arg)}
+#define INSTRUCTION_LN(op, reg_flag) {.value = ((op << 27) + (reg_flag << 26))}
 #define INSTRUCTION_LA(arg) {.value = (arg)}
 
 const char * instruction_names[] = {
-  "ADD", "SUB", "DIV", "MUL", "AND", "OR",  "XOR", "LDC",
+  "ADD", "SUB", "DIV", "MUL", "AND", "OR",  "XOR", "LDC", "MOV",
   "BRNE","BRE", "BT",  "BF",  "JMP", "LDW", "STW", "LDA",
   "STA", "RET", "ENTSP","PUSH","POP","EXIT"
 };
@@ -27,7 +28,9 @@ typedef enum opcode_t {
   AND,     /* Bitwise AND */
   OR,      /* Bitwise OR */
   XOR,     /* Bitwise XOR */
+
   LDC,     /* Load Constant */
+  MOV,     /* Move register */
 
   BRNE,    /* Branch Relative if Not Equal */
   BRE,     /* Branch Relative if Equal */

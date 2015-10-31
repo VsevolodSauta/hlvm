@@ -15,14 +15,30 @@ instruction_t program[] = {
   INSTRUCTION_LA(0x01),
 
   INSTRUCTION_L(LDC, 1, R1),
-  INSTRUCTION_LA(0x10),
+  INSTRUCTION_LA(0xF),
 
-  INSTRUCTION_S(SUB, 1, R0, R1),
+  INSTRUCTION_L(LDC, 1, R2),     // prev
+  INSTRUCTION_LA(0x00),
 
-  INSTRUCTION_S(BRNE, 0, R0, R0),
-  INSTRUCTION_LA(4),
+  INSTRUCTION_L(LDC, 1, R3),     // curr
+  INSTRUCTION_LA(0x01),
 
-  INSTRUCTION_S(EXIT, 1, R1, R1)
+  INSTRUCTION_L(LDC, 1, R4),     // tmp
+  INSTRUCTION_LA(0x00),
+
+  // Begin loop
+
+  INSTRUCTION_S(MOV, 1, R2, R4), // tmp = prev
+  INSTRUCTION_S(MOV, 1, R3, R2), // prev = curr
+  INSTRUCTION_S(ADD, 1, R3, R4), // tmp = tmp + curr
+  INSTRUCTION_S(MOV, 1, R4, R3), // curr = tmp
+  INSTRUCTION_S(SUB, 1, R0, R1), // counter --
+
+
+  INSTRUCTION_LN(BRNE, 0),
+  INSTRUCTION_LA(10),
+
+  INSTRUCTION_S(EXIT, 1, R3, R3)
 };
 
 uint32_t register_file[REGISTER_FILE_SIZE];
@@ -117,13 +133,29 @@ execute_instruction()
       break;
     }
 
+    // Copy one register to another. Short instruction
+    case MOV:
+    {
+      if(current_inst->two_op.register_flag == 1)
+      {
+        register_file[current_inst->two_op.upper_argument] = register_file[current_inst->two_op.lower_argument];
+      }
+      else
+      {
+        ILLEGAL_INSTRUCTION_FORMAT();
+      }
+
+      break;
+    }
+
+    // Branch if not equal. Short instruction with registers, long without
     case BRNE:
     {
       if(status_reg->zero == 0)
       {
         if(current_inst->two_op.register_flag == 1)
         {
-          *pc = current_inst->two_op.upper_argument;
+          *pc += current_inst->two_op.upper_argument;
         }
         else
         {
