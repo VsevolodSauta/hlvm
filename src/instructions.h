@@ -60,11 +60,11 @@ enum register_t {
 };
 
 typedef struct status_register_t {
-  uint8_t carry : 1;          /* Carry flag */
-  uint8_t zero : 1;           /* Zero flag */
-  uint8_t negative : 1;       /* Negative flag */
-  uint8_t overflow : 1;       /* Overflow flag */
-  uint8_t reserved : 4;       /* Unused */
+  uint32_t carry : 1;          /* Carry flag */
+  uint32_t zero : 1;           /* Zero flag */
+  uint32_t negative : 1;       /* Negative flag */
+  uint32_t overflow : 1;       /* Overflow flag */
+  uint32_t reserved : 28;       /* Unused */
 } status_register_t;
 
 typedef union instruction_t {

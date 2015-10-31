@@ -12,18 +12,22 @@
 uint32_t memory[MEMORY_SIZE];
 instruction_t program[] = {
   INSTRUCTION_L(LDC, 1, R0),
-  INSTRUCTION_LA(0x10),
-  INSTRUCTION_S(ADD, 1, R0, R0),
+  INSTRUCTION_LA(0x01),
 
   INSTRUCTION_L(LDC, 1, R1),
-  INSTRUCTION_LA(0x0c),
-  INSTRUCTION_S(SUB, 1, R1, R0),
+  INSTRUCTION_LA(0x10),
 
-  INSTRUCTION_S(EXIT, 1, R0, R0)
+  INSTRUCTION_S(SUB, 1, R0, R1),
+
+  INSTRUCTION_S(BRNE, 0, R0, R0),
+  INSTRUCTION_LA(4),
+
+  INSTRUCTION_S(EXIT, 1, R1, R1)
 };
 
 uint32_t register_file[REGISTER_FILE_SIZE];
 uint32_t * pc = &register_file[PC];
+status_register_t * status_reg = (status_register_t *) &register_file[STATUS];
 
 void initialise_machine();
 void execute_instruction();
@@ -42,7 +46,7 @@ main(int argc, char * argv[])
       exit(2);
     }
 
-    printf("[%04d] Instruction: % 4s. register_flag: %s. Machine instruction: 0x%08x\n",
+    printf("[%04d] Instruction: %4s. register_flag: %s. Machine instruction: 0x%08x\n",
       *pc,
       instruction_names[((instruction_t)memory[*pc]).long_instruction.opcode],
       ((instruction_t)memory[*pc]).long_instruction.register_flag == 1 ? "true" : "false",
@@ -74,6 +78,7 @@ execute_instruction()
       if(current_inst->two_op.register_flag == 1)
       {
         register_file[current_inst->two_op.upper_argument] += register_file[current_inst->two_op.lower_argument];
+        status_reg->zero = (register_file[current_inst->two_op.upper_argument] == 0);
       }
       else
       {
@@ -87,6 +92,7 @@ execute_instruction()
       if(current_inst->two_op.register_flag == 1)
       {
         register_file[current_inst->two_op.upper_argument] -= register_file[current_inst->two_op.lower_argument];
+        status_reg->zero = (register_file[current_inst->two_op.upper_argument] == 0);
       }
       else
       {
@@ -107,6 +113,29 @@ execute_instruction()
       {
         ILLEGAL_INSTRUCTION_FORMAT();
       }
+
+      break;
+    }
+
+    case BRNE:
+    {
+      if(status_reg->zero == 0)
+      {
+        if(current_inst->two_op.register_flag == 1)
+        {
+          *pc = current_inst->two_op.upper_argument;
+        }
+        else
+        {
+          *pc += 1;
+          current_inst = (instruction_t*) &memory[register_file[PC]];
+          *pc = current_inst->value;
+          return;
+        }
+      }
+
+      if(current_inst->two_op.register_flag == 0)
+        *pc += 1;
 
       break;
     }
