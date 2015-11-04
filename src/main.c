@@ -100,102 +100,40 @@ execute_instruction()
     // Add is a short instruction
     case ADD:
     {
-      if(current_inst->two_op.register_flag == 1)
-      {
-        register_file[current_inst->two_op.upper_argument] += register_file[current_inst->two_op.lower_argument];
-        status_reg->zero = (register_file[current_inst->two_op.upper_argument] == 0);
-      }
-      else
-      {
-        ILLEGAL_INSTRUCTION_FORMAT();
-      }
+      op_add(register_file, memory);
       break;
     }
 
     case SUB:
     {
-      if(current_inst->two_op.register_flag == 1)
-      {
-        register_file[current_inst->two_op.upper_argument] -= register_file[current_inst->two_op.lower_argument];
-        status_reg->zero = (register_file[current_inst->two_op.upper_argument] == 0);
-      }
-      else
-      {
-        ILLEGAL_INSTRUCTION_FORMAT();
-      }
+      op_sub(register_file, memory);
       break;
     }
 
     // Load constant is a long instruction
     case LDC:
     {
-      if(current_inst->long_instruction.register_flag == 1)
-      {
-        register_file[current_inst->long_instruction.argument] = memory[*pc + 1];
-        *pc +=1;
-      }
-      else
-      {
-        ILLEGAL_INSTRUCTION_FORMAT();
-      }
-
+      op_ldc(register_file, memory);
       break;
     }
 
     // Copy one register to another. Short instruction
     case MOV:
     {
-      if(current_inst->two_op.register_flag == 1)
-      {
-        register_file[current_inst->two_op.upper_argument] = register_file[current_inst->two_op.lower_argument];
-      }
-      else
-      {
-        ILLEGAL_INSTRUCTION_FORMAT();
-      }
-
+      op_mov(register_file, memory);
       break;
     }
 
     // Branch if not equal. Short instruction with registers, long without
     case BRNE:
     {
-      if(status_reg->zero == 0)
-      {
-        if(current_inst->two_op.register_flag == 1)
-        {
-          *pc += current_inst->two_op.upper_argument;
-        }
-        else
-        {
-          *pc += 1;
-          current_inst = (instruction_t*) &memory[register_file[PC]];
-          *pc = current_inst->value;
-          return;
-        }
-      }
-
-      if(current_inst->two_op.register_flag == 0)
-        *pc += 1;
-
+      op_brne(register_file, memory);
       break;
     }
 
     case EXIT:
     {
-      if(current_inst->two_op.register_flag == 1)
-      {
-        printf("Exit.\n  Register 0x%02x = 0x%04x (%d)",
-          current_inst->two_op.upper_argument,
-          register_file[current_inst->two_op.upper_argument],
-          register_file[current_inst->two_op.upper_argument]);
-        exit(0);
-      }
-      else
-      {
-        ILLEGAL_INSTRUCTION_FORMAT();
-      }
-
+      op_exit(register_file, memory);
       break;
     }
   }

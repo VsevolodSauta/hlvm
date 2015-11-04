@@ -4,13 +4,13 @@ CC_FLAGS = -c -g -Wall
 CC_FLAGS = $(CPU) -c -g -fno-common
 
 LD = gcc
-LD_FLAGS = 
+LD_FLAGS =
 LIBRARY_PATHS =
 LIBRARIES = -lc
 
 BINARY_NAME = hlvm
 
-FILES = src/main.o src/arithmetic.o
+FILES = src/main.o src/arithmetic.o src/memory.o src/branching.o
 INCLUDE = -I./src
 
 COLOR_GREEN = "\e[32m"

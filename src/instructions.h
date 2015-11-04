@@ -102,4 +102,8 @@ typedef union instruction {
 #define GET_LOWER_WORD(instruction) (instruction.operand.word_16_s.lower_word)
 #define GET_UPPER_WORD(instruction) (instruction.operand.word_16_s.upper_word)
 
+#include "arithmetic.h"
+#include "branching.h"
+#include "memory.h"
+
 #endif
