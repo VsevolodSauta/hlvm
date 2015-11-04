@@ -1,3 +1,7 @@
+/*
+ * (C) The University of Kent and Simon Cooksey 2015.
+ */
+
 #include <assert.h>
 #include <inttypes.h>
 #include <stdlib.h>

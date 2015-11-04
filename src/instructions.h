@@ -1,3 +1,7 @@
+/*
+ * (C) The University of Kent and Simon Cooksey 2015.
+ */
+
 #ifndef __instructions_h_
 #define __instructions_h_
 
@@ -10,7 +14,14 @@
       .upper_argument = arg2                    \
     }                                           \
   }
-#define INSTRUCTION_L(op, reg_flag, arg) {.value = ((op << 27) + (reg_flag << 26) + arg)}
+#define INSTRUCTION_L(op, reg_flag, arg)        \
+  { .long_instruction =                         \
+    {                                           \
+      .opcode = op,                             \
+      .register_flag = reg_flag,                \
+      .argument = arg                           \
+    }                                           \
+  }
 #define INSTRUCTION_LA(arg) {.value = (arg)}
 
 const char * instruction_names[] = {
@@ -19,7 +30,7 @@ const char * instruction_names[] = {
   "STA", "RET", "ENTSP","PUSH","POP","EXIT"
 };
 
-typedef enum opcode_t {
+enum opcode_t {
   ADD,     /* Add */
   SUB,     /* Subtract */
   DIV,     /* Divide */
@@ -47,7 +58,7 @@ typedef enum opcode_t {
   PUSH,    /* Push all registers onto the stack */
   POP,     /* Pop all registers from the stack */
   EXIT     /* Print the contents of a register and exit the program */
-} opcode_t;
+};
 
 enum register_t {
   /* General purpose registers */
@@ -59,7 +70,7 @@ enum register_t {
   REGISTER_FILE_SIZE
 };
 
-typedef struct status_register_t {
+typedef struct status_register {
   uint8_t carry : 1;          /* Carry flag */
   uint8_t zero : 1;           /* Zero flag */
   uint8_t negative : 1;       /* Negative flag */
@@ -67,7 +78,7 @@ typedef struct status_register_t {
   uint8_t reserved : 4;       /* Unused */
 } status_register_t;
 
-typedef union instruction_t {
+typedef union instruction {
   uint32_t value;
 
   struct {
