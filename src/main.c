@@ -71,7 +71,7 @@ main(int argc, char * argv[])
       exit(2);
     }
 
-    printf("[%04d] Instruction: %4s. register_flag: %s. Machine instruction: 0x%08x\n",
+    printf("[%04d] Instruction: %4s. register_flag: %5s. Machine instruction: 0x%08x\n",
       *pc,
       instruction_names[((instruction_t)memory[*pc]).long_instruction.opcode],
       ((instruction_t)memory[*pc]).long_instruction.register_flag == 1 ? "true" : "false",
