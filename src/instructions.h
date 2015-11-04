@@ -5,6 +5,8 @@
 #ifndef __instructions_h_
 #define __instructions_h_
 
+#include <inttypes.h>
+
 #define INSTRUCTION_S(op, reg_flag, arg1, arg2) \
   { .two_op =                                   \
     {                                           \
@@ -25,11 +27,7 @@
 #define INSTRUCTION_LN(op, reg_flag) {.value = ((op << 27) + (reg_flag << 26))}
 #define INSTRUCTION_LA(arg) {.value = (arg)}
 
-const char * instruction_names[] = {
-  "ADD", "SUB", "DIV", "MUL", "AND", "OR",  "XOR", "LDC", "MOV",
-  "BRNE","BRE", "BT",  "BF",  "JMP", "LDW", "STW", "LDA",
-  "STA", "RET", "ENTSP","PUSH","POP","EXIT"
-};
+extern const char * instruction_names[];
 
 enum opcode_t {
   ADD,     /* Add */
@@ -103,6 +101,5 @@ typedef union instruction {
 /* Macros to access operands of an instruction */
 #define GET_LOWER_WORD(instruction) (instruction.operand.word_16_s.lower_word)
 #define GET_UPPER_WORD(instruction) (instruction.operand.word_16_s.upper_word)
-
 
 #endif

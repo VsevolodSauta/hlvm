@@ -3,7 +3,6 @@
  */
 
 #include <assert.h>
-#include <inttypes.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -12,6 +11,12 @@
 #include "instructions.h"
 
 #define MEMORY_SIZE 100
+
+const char * instruction_names[] = {
+  "ADD", "SUB", "DIV", "MUL", "AND", "OR",  "XOR", "LDC", "MOV",
+  "BRNE","BRE", "BT",  "BF",  "JMP", "LDW", "STW", "LDA",
+  "STA", "RET", "ENTSP","PUSH","POP","EXIT"
+};
 
 uint32_t memory[MEMORY_SIZE];
 instruction_t program[] = {
