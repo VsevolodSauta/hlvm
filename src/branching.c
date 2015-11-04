@@ -42,7 +42,7 @@ void op_exit(uint32_t * register_file, uint32_t * memory)
 
   if(current_inst->two_op.register_flag == 1)
   {
-    printf("Exit.\n  Register 0x%02x = 0x%04x (%d)",
+    printf("Exit.\n  Register 0x%02x = 0x%04x (%d)\n",
       current_inst->two_op.upper_argument,
       register_file[current_inst->two_op.upper_argument],
       register_file[current_inst->two_op.upper_argument]);
