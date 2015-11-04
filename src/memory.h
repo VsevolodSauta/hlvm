@@ -7,6 +7,7 @@
 
 void op_ldc(uint32_t * register_file, uint32_t * memory);
 void op_mov(uint32_t * register_file, uint32_t * memory);
-
+void op_ldw(uint32_t * register_file, uint32_t * memory);
+void op_stw(uint32_t * register_file, uint32_t * memory);
 
 #endif // __memory_h_
