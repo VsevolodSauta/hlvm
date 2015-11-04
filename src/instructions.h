@@ -22,10 +22,11 @@
       .argument = arg                           \
     }                                           \
   }
+#define INSTRUCTION_LN(op, reg_flag) {.value = ((op << 27) + (reg_flag << 26))}
 #define INSTRUCTION_LA(arg) {.value = (arg)}
 
 const char * instruction_names[] = {
-  "ADD", "SUB", "DIV", "MUL", "AND", "OR",  "XOR", "LDC",
+  "ADD", "SUB", "DIV", "MUL", "AND", "OR",  "XOR", "LDC", "MOV",
   "BRNE","BRE", "BT",  "BF",  "JMP", "LDW", "STW", "LDA",
   "STA", "RET", "ENTSP","PUSH","POP","EXIT"
 };
@@ -38,7 +39,9 @@ enum opcode_t {
   AND,     /* Bitwise AND */
   OR,      /* Bitwise OR */
   XOR,     /* Bitwise XOR */
+
   LDC,     /* Load Constant */
+  MOV,     /* Move register */
 
   BRNE,    /* Branch Relative if Not Equal */
   BRE,     /* Branch Relative if Equal */
@@ -70,12 +73,12 @@ enum register_t {
   REGISTER_FILE_SIZE
 };
 
-typedef struct status_register {
-  uint8_t carry : 1;          /* Carry flag */
-  uint8_t zero : 1;           /* Zero flag */
-  uint8_t negative : 1;       /* Negative flag */
-  uint8_t overflow : 1;       /* Overflow flag */
-  uint8_t reserved : 4;       /* Unused */
+typedef struct status_register_t {
+  uint32_t carry : 1;          /* Carry flag */
+  uint32_t zero : 1;           /* Zero flag */
+  uint32_t negative : 1;       /* Negative flag */
+  uint32_t overflow : 1;       /* Overflow flag */
+  uint32_t reserved : 28;       /* Unused */
 } status_register_t;
 
 typedef union instruction {
