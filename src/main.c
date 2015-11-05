@@ -14,7 +14,7 @@
 
 const char * instruction_names[] = {
   "ADD", "SUB", "DIV", "MUL", "AND", "OR",  "XOR", "LDC", "MOV",
-  "BRNE","BRE", "BT",  "BF",  "JMP", "LDW", "STW", "LDA",
+  "BRNE","BRE", "BT",  "BF",  "BU",  "JMP", "LDW", "STW", "LDA",
   "STA", "RET", "ENTSP","PUSH","POP","EXIT"
 };
 
@@ -130,6 +130,36 @@ execute_instruction()
     case BRNE:
     {
       op_brne(register_file, memory);
+      break;
+    }
+
+    case BRE:
+    {
+      op_bre(register_file, memory);
+      break;
+    }
+
+    case BT:
+    {
+      op_bt(register_file, memory);
+      break;
+    }
+
+    case BF:
+    {
+      op_bf(register_file, memory);
+      break;
+    }
+
+    case BU:
+    {
+      op_bu(register_file, memory);
+      break;
+    }
+
+    case JMP:
+    {
+      op_jmp(register_file, memory);
       break;
     }
 

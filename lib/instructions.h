@@ -46,6 +46,7 @@ enum opcode_t {
 
   BT,      /* Branch absolute if True */
   BF,      /* Branch absolute if False */
+  BU,      /* Branch unconditional */
 
   JMP,     /* Absolute Jump */
 
