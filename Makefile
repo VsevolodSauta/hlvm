@@ -11,12 +11,12 @@ LIBRARIES = -lc
 BINARY_NAME = hlvm
 
 FILES = src/main.o src/arithmetic.o src/memory.o src/branching.o
-INCLUDE = -I./src
+INCLUDE = -I./lib
 
 COLOR_GREEN = "\e[32m"
 COLOR_RESET = "\e[0m"
 
-all: $(FILES) $(BINARY_NAME)
+all: $(FILES) $(BINARY_NAME) clean
 
 .c.o: $(FILES)
 	@$(CC) $(CC_FLAGS) $(INCLUDE) -o $@ $<
@@ -26,7 +26,7 @@ $(BINARY_NAME): $(FILES)
 	@echo -e [$(COLOR_GREEN)LD$(COLOR_RESET)]\ \ $@
 	@$(LD) $(LD_FLAGS) -o $@ $^ $(LIBRARIES) $(LD_SYS_LIBS) $(LIBRARIES) $(LD_SYS_LIBS)
 
-clean: $(FILES)
-	rm $^
+clean:
+	rm $(FILES)
 
 .PHONY: all

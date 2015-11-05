@@ -76,7 +76,7 @@ typedef struct status_register_t {
   uint32_t zero : 1;           /* Zero flag */
   uint32_t negative : 1;       /* Negative flag */
   uint32_t overflow : 1;       /* Overflow flag */
-  uint32_t reserved : 28;       /* Unused */
+  uint32_t reserved : 28;      /* Unused */
 } status_register_t;
 
 typedef union instruction {
