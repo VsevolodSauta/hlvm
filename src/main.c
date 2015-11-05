@@ -84,7 +84,8 @@ main(int argc, char * argv[])
 void
 initialise_machine()
 {
-  memset(&register_file, sizeof(register_file), 0);
+  memset(register_file, sizeof(register_file), 0);
+  memset(memory, sizeof(memory), 0);
   assert(sizeof(program) < sizeof(memory));
   memcpy(memory, program, sizeof(program));
 }
@@ -95,6 +96,7 @@ execute_instruction()
   instruction_t * current_inst = (instruction_t*) &memory[register_file[PC]];
 
   // At 1st we have to assume this is a long instruction
+  // TODO: Measure this switch vs an array of function pointers
   switch(current_inst->long_instruction.opcode)
   {
     // Add is a short instruction
