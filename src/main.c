@@ -112,6 +112,25 @@ execute_instruction()
       break;
     }
 
+    case AND:
+    {
+      op_and(register_file, memory);
+      break;
+    }
+
+    case OR:
+    {
+      op_or(register_file, memory);
+      break;
+    }
+
+    case XOR:
+    {
+      op_xor(register_file, memory);
+      break;
+    }
+
+
     // Load constant is a long instruction
     case LDC:
     {
